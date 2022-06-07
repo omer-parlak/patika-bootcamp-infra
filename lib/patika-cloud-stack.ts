@@ -1,16 +1,23 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { RemovalPolicy, Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import {
+  aws_s3,
+} from 'aws-cdk-lib';
+import { BucketAccessControl } from 'aws-cdk-lib/aws-s3';
 
 export class PatikaCloudStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    //Resource Pyhsical ID
+    const buck = new aws_s3.Bucket(this, 'BenimGuzelManolyam', {
+      accessControl: BucketAccessControl.PRIVATE,
+    });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'PatikaCloudQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    new CfnOutput(this, 'PatikaS3BucketARN', {
+      value: buck.bucketArn,
+      exportName: 'PatikaS3BucketARN'
+    });
+
   }
 }
